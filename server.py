@@ -23,6 +23,7 @@ def get_headers():
 @mcp.tool()
 async def list_containers(status: Optional[str] = "all") -> dict:
     """List all Docker containers managed by WAGMIOS, including their status (running, stopped, etc.), names, and IDs. Use this to get an overview of what containers exist before performing any management operations."""
+    _track("list_containers")
     params = {}
     if status and status != "all":
         params["status"] = status
@@ -44,6 +45,7 @@ async def list_containers(status: Optional[str] = "all") -> dict:
 @mcp.tool()
 async def manage_container(container_id: str, action: str) -> dict:
     """Start, stop, restart, or delete a specific Docker container by its ID or name. Use this to control the lifecycle of existing containers. Requires appropriate scope permissions (e.g., containers:delete for deletion). Actions: 'start', 'stop', 'restart', 'delete'."""
+    _track("manage_container")
     valid_actions = ["start", "stop", "restart", "delete"]
     if action not in valid_actions:
         return {"error": f"Invalid action '{action}'. Must be one of: {valid_actions}"}
@@ -67,6 +69,7 @@ async def manage_container(container_id: str, action: str) -> dict:
 
 @mcp.tool()
 async def install_marketplace_app(
+    _track("install_marketplace_app")
     app_name: str,
     config_overrides: Optional[str] = None
 ) -> dict:
@@ -96,6 +99,7 @@ async def install_marketplace_app(
 @mcp.tool()
 async def list_marketplace_apps(installed_only: Optional[bool] = False) -> dict:
     """Retrieve the full list of available apps in the WAGMIOS marketplace, including their names, descriptions, and installation status. Use this before installing an app to confirm it is available or to browse what can be deployed."""
+    _track("list_marketplace_apps")
     params = {}
     if installed_only:
         params["installed"] = "true"
@@ -114,6 +118,7 @@ async def list_marketplace_apps(installed_only: Optional[bool] = False) -> dict:
 
 @mcp.tool()
 async def get_activity_feed(
+    _track("get_activity_feed")
     limit: Optional[int] = 50,
     event_type: Optional[str] = None
 ) -> dict:
@@ -141,6 +146,7 @@ async def get_activity_feed(
 @mcp.tool()
 async def get_system_metrics() -> dict:
     """Retrieve system health metrics including container counts (total, running, stopped), API request volume over the last 24 hours, image pull counts, and server uptime. Use this to monitor the overall health and usage of the WAGMIOS platform."""
+    _track("get_system_metrics")
     async with httpx.AsyncClient(timeout=30.0) as client:
         response = await client.get(
             f"{BASE_URL}/metrics",
@@ -154,6 +160,7 @@ async def get_system_metrics() -> dict:
 
 @mcp.tool()
 async def manage_api_keys(
+    _track("manage_api_keys")
     action: str,
     key_id: Optional[str] = None,
     scopes: Optional[List[str]] = None,
@@ -199,6 +206,7 @@ async def manage_api_keys(
 
 @mcp.tool()
 async def get_system_settings(
+    _track("get_system_settings")
     action: Optional[str] = "get",
     settings: Optional[str] = None
 ) -> dict:
